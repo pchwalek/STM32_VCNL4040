@@ -24,6 +24,7 @@
 //#include <Wire.h>
 
 #define VCNL4040_I2CADDR_DEFAULT 0x60 ///< VCNL4040 default i2c address
+#define boolean bool
 
 // All addresses are for 16bit registers;
 // duplicates are for high or low bytes that aren't used together
@@ -41,6 +42,11 @@
 #define VCNL4040_WHITE_DATA 0x0A ///< White light sensor data register
 #define VCNL4040_INT_FLAG 0x0B   ///< Interrupt status register
 #define VCNL4040_DEVICE_ID 0x0C  ///< Device ID
+
+typedef struct lux_samples{
+	uint32_t timestamp;
+	uint16_t lux;
+}lux_sample;
 
 /**
  * @brief Proximity LED current values
@@ -128,7 +134,7 @@ typedef enum interrupt_type {
 class Adafruit_VCNL4040 {
 public:
   Adafruit_VCNL4040();
-  boolean begin(uint8_t i2c_addr = VCNL4040_I2CADDR_DEFAULT,
+  boolean begin(uint8_t i2c_address = VCNL4040_I2CADDR_DEFAULT,
 		I2C_HandleTypeDef *i2c_handle = NULL);
   uint16_t getProximity(void);
   uint16_t getAmbientLight(void);
@@ -172,18 +178,18 @@ public:
   bool getProximityHighResolution(void);
   void setProximityHighResolution(bool high_resolution);
 
-  Adafruit_BusIO_Register
-      *PS_CONFIG_12, ///< BusIO Register for PS_CONFIG1 and PS_CONFIG2
-      *ALS_CONFIG,   ///< BusIO Register for ALS_CONFIG
-      *PS_MS;        ///< BusIO Register for PS_MS
+//  Adafruit_BusIO_Register
+//      *PS_CONFIG_12, ///< BusIO Register for PS_CONFIG1 and PS_CONFIG2
+//      *ALS_CONFIG,   ///< BusIO Register for ALS_CONFIG
+//      *PS_MS;        ///< BusIO Register for PS_MS
 
 
 private:
   I2C_HandleTypeDef *i2c_han = NULL;///< Pointer to I2C bus interface
   uint8_t i2c_addr = 0;
 
-  bool writeRegister(uint8_t mem_addr, uint8_t *val, uint16_t size, void *intf);
-  bool readRegister(uint16_t mem_addr, uint8_t *dest, uint16_t size, void *intf);
+  bool writeRegister(uint8_t mem_addr, uint8_t *val, uint16_t size);
+  bool readRegister(uint16_t mem_addr, uint8_t *dest, uint16_t size);
 //  uint8_t checkRegisterBit(uint16_t reg, uint8_t pos);
   uint8_t modifyBitInByte16(uint16_t var, uint16_t value, uint8_t pos);
   bool modifyRegisterMultipleBit16(uint16_t reg, uint16_t value, uint16_t pos, uint8_t bits);
@@ -192,7 +198,7 @@ private:
 
   bool _init(void);
 
-  Adafruit_I2CDevice *i2c_dev;
+//  Adafruit_I2CDevice *i2c_dev;
 };
 
 #endif

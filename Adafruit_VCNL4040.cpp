@@ -32,11 +32,10 @@
  *     v1.0 - First release
  */
 
-#include "Arduino.h"
-#include <Wire.h>
-
 #include "Adafruit_VCNL4040.h"
 
+#define boolean bool
+#define delay HAL_Delay
 /*!
  *    @brief  Instantiates a new VCNL4040 class
  */
@@ -73,10 +72,10 @@ boolean Adafruit_VCNL4040::_init(void) {
 //  PS_CONFIG_12 = new Adafruit_BusIO_Register(i2c_dev, VCNL4040_PS_CONF1_L, 2);
 //  PS_MS = new Adafruit_BusIO_Register(i2c_dev, VCNL4040_PS_MS_H, 2);
 
-  enableProximity(true);
-  enableWhiteLight(true);
-  enableAmbientLight(true);
-  setProximityHighResolution(true);
+//  enableProximity(true);
+//  enableWhiteLight(true);
+//  enableAmbientLight(true);
+//  setProximityHighResolution(true);
 
   return true;
 }
@@ -417,8 +416,6 @@ void Adafruit_VCNL4040::setProximityLEDDutyCycle(
             If false, proximity measurements are 12-bit,
 */
 bool Adafruit_VCNL4040::getProximityHighResolution(void) {
-  Adafruit_BusIO_RegisterBits ps_hd =
-      Adafruit_BusIO_RegisterBits(PS_CONFIG_12, 1, 11);
   return (bool)readRegisterMultipleBit16(VCNL4040_PS_CONF1_L, 11, 1);
 }
 /**************************************************************************/
@@ -461,7 +458,7 @@ bool Adafruit_VCNL4040::writeRegister(uint8_t mem_addr, uint8_t *val,
 //	return writeRegisterByte(reg, register_value);
 //}
 
-bool Adafruit_AS7341::modifyRegisterMultipleBit16(uint16_t reg, uint16_t value,
+bool Adafruit_VCNL4040::modifyRegisterMultipleBit16(uint16_t reg, uint16_t value,
 						  uint16_t pos, uint8_t bits) {
 	uint16_t register_value;
 	readRegister(reg, (uint8_t *)&register_value,2);
@@ -476,18 +473,17 @@ bool Adafruit_AS7341::modifyRegisterMultipleBit16(uint16_t reg, uint16_t value,
 	return writeRegister(reg, (uint8_t *) &register_value, 2);
 }
 
-uint16_t Adafruit_AS7341::readRegisterMultipleBit16(uint16_t reg,
+uint16_t Adafruit_VCNL4040::readRegisterMultipleBit16(uint16_t reg,
 						  uint16_t pos, uint8_t bits) {
 	uint16_t register_value;
 	readRegister(reg, (uint8_t *)&register_value,2);
 
 	uint16_t mask = (1 << (bits)) - 1;
-	value &= mask;
 
 	mask <<= pos;
 	register_value &= ~mask;          // remove the current data at that spot
 
-	return register_value
+	return register_value;
 }
 
 
